@@ -4,16 +4,12 @@ const baySchema = new mongoose.Schema({
   designation: {
     type: String,
     required: true
-  },
-  shelfCount: {
-    type: String,
-    required: false
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
   }
+  // owner: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'User',
+  //   required: true
+  // }
 }, {
   timestamps: true
 })

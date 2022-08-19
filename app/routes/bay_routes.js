@@ -1,5 +1,5 @@
 const express = require('express')
-const passport = require('passport')
+// const passport = require('passport')
 
 const Bay = require('../models/bay')
 
@@ -9,7 +9,7 @@ const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 
 const removeBlanks = require('../../lib/remove_blank_fields')
-const requireToken = passport.authenticate('bearer', { session: false })
+// const requireToken = passport.authenticate('bearer', { session: false })
 
 const router = express.Router()
 
@@ -29,9 +29,7 @@ router.get('/bay/:id', (req, res, next) => {
     .catch(next)
 })
 
-router.post('/bays', requireToken, (req, res, next) => {
-  req.body.bay.owner = req.user.id
-
+router.post('/bays', (req, res, next) => {
   Bay.create(req.body.bay)
     .then(bay => {
       res.status(201).json({ bay: bay.toObject() })
@@ -39,7 +37,7 @@ router.post('/bays', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-router.patch('/bay/:id', requireToken, removeBlanks, (req, res, next) => {
+router.patch('/bay/:id', removeBlanks, (req, res, next) => {
   delete req.body.bay.owner
 
   Bay.findById(req.params.id)
@@ -53,7 +51,7 @@ router.patch('/bay/:id', requireToken, removeBlanks, (req, res, next) => {
     .catch(next)
 })
 
-router.delete('/bay/:id', requireToken, (req, res, next) => {
+router.delete('/bay/:id', (req, res, next) => {
   Bay.findById(req.params.id)
     .then(handle404)
     .then(bay => {

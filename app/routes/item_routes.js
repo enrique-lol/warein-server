@@ -1,7 +1,7 @@
 // Express docs: http://expressjs.com/en/api.html
 const express = require('express')
 // Passport docs: http://www.passportjs.org/docs/
-const passport = require('passport')
+// const passport = require('passport')
 
 // pull in Mongoose model for items
 const Item = require('../models/item')
@@ -21,13 +21,13 @@ const removeBlanks = require('../../lib/remove_blank_fields')
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
 // it will also set `req.user`
-const requireToken = passport.authenticate('bearer', { session: false })
+// const requireToken = passport.authenticate('bearer', { session: false })
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
 // Index
-router.get('/items', requireToken, (req, res, next) => {
+router.get('/items', (req, res, next) => {
   Item.find()
     .then(items => {
       // `items` will be an array of Mongoose documents
@@ -41,7 +41,7 @@ router.get('/items', requireToken, (req, res, next) => {
 })
 
 // View one
-router.get('/items/:id', requireToken, (req, res, next) => {
+router.get('/items/:id', (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   Item.findById(req.params.id)
     .then(handle404)
@@ -51,7 +51,7 @@ router.get('/items/:id', requireToken, (req, res, next) => {
 })
 
 // CREATE
-router.post('/items', requireToken, (req, res, next) => {
+router.post('/items', (req, res, next) => {
   // set owner of new item to be current user
   req.body.item.owner = req.user.id
 
@@ -67,7 +67,7 @@ router.post('/items', requireToken, (req, res, next) => {
 })
 
 // UPDATE
-router.patch('/items/:id', requireToken, removeBlanks, (req, res, next) => {
+router.patch('/items/:id', removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
   delete req.body.item.owner
@@ -89,7 +89,7 @@ router.patch('/items/:id', requireToken, removeBlanks, (req, res, next) => {
 
 // DESTROY
 // DELETE /items/5a7db6c74d55bc51bdf39793
-router.delete('/items/:id', requireToken, (req, res, next) => {
+router.delete('/items/:id', (req, res, next) => {
   Item.findById(req.params.id)
     .then(handle404)
     .then(item => {
